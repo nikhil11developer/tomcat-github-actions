@@ -1,0 +1,51 @@
+name: Build and Deploy Spring Boot WAR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      war-file: ${{ steps.export.outputs.war-file }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build WAR with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Find built WAR file
+        id: export
+        run: |
+          FILE=$(find target -name "*.war" | head -n 1)
+          echo "WAR file: $FILE"
+          echo "war-file=$FILE" >> $GITHUB_OUTPUT
+
+      - name: Upload WAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: springboot-war
+          path: ${{ steps.export.outputs.war-file }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download WAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: springboot-war
+          path: ./target
+
+      - name: Show downloaded WAR
+        run: ls -lh target
+
