@@ -12,7 +12,7 @@ public class DemoApplication extends SpringBootServletInitializer {
 
     @GetMapping("/hello")
     public String hello() {
-        return "Hello from Spring Boot deployed on Tomcat!";
+        return "Bello from Spring Boot deployed on Tomcat!";
     }
 
     public static void main(String[] args) {
