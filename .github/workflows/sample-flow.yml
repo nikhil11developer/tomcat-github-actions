@@ -39,6 +39,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: MY_ENV
     steps:
       - name: Download WAR artifact
         uses: actions/download-artifact@v4
@@ -46,6 +47,14 @@ jobs:
           name: springboot-war
           path: ./target
 
+      - name: Check if secret is available
+        run: |
+          if [ -z "${{ secrets.EC2_USER }}" ]; then
+            echo "Secret is NOT set"
+          else
+            echo "Secret is SET"
+          fi
+      
       - name: Show downloaded WAR
         run: ls -lh target
 
