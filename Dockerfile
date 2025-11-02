@@ -1,11 +1,8 @@
-# Use a lightweight Java runtime
+# Step 1: Use an official JDK image to build
 FROM openjdk:17-jdk-slim
 
-# Set working directory inside the container
-WORKDIR /app
-
-# Copy JAR file
+# Step 2: Copy the JAR from the target folder into the image
 COPY target/*.jar app.jar
 
-# Run Spring Boot app
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# Step 3: Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
